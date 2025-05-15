@@ -75,7 +75,7 @@
         </div>
 
         <div class="card mb-4">
-            <div class="card-header bg-gradient-purple text-white">
+            <div class="card-header text-black" style="background: linear-gradient(90deg, #BA68C8 0%, #7B1FA2 100%);">
                 <h5 class="mb-0">Detail Layanan</h5>
             </div>
             <div class="card-body">
@@ -89,16 +89,16 @@
                         <span><?php echo ucfirst($booking->paket_grooming); ?></span>
                     </div>
                     <div class="detail-item">
+                        <span class="detail-label">Jenis Hewan:</span>
+                        <span><?php echo $booking->jenis_hewan; ?></span>
+                    </div>
+                    <div class="detail-item">
                         <span class="detail-label">Tanggal:</span>
                         <span><?php echo date('d M Y', strtotime($booking->tanggal_grooming)); ?></span>
                     </div>
                     <div class="detail-item">
                         <span class="detail-label">Waktu:</span>
                         <span><?php echo $booking->waktu_booking; ?></span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Jenis Hewan:</span>
-                        <span><?php echo $booking->jenis_hewan; ?></span>
                     </div>
                     <?php if($booking->pengantaran == 'antar'): ?>
                     <div class="detail-item">
@@ -124,11 +124,6 @@
                         <span><?php echo date('d M Y', strtotime($booking->check_out)); ?></span>
                     </div>
                 <?php endif; ?>
-                
-                <div class="detail-item">
-                    <span class="detail-label">Jenis Hewan:</span>
-                    <span><?php echo $booking->jenis_hewan; ?></span>
-                </div>
             </div>
         </div>
 

@@ -12,7 +12,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |	http://example.com/
 |
 */
-$config['base_url'] = 'http://localhost/happypaws/';
+$config['base_url'] = 'http://localhost/happypaws-1/';
 
 /*
 |--------------------------------------------------------------------------

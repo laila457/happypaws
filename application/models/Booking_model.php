@@ -24,4 +24,41 @@ class Booking_model extends CI_Model {
         $this->db->where('id', $booking_id);
         return $this->db->get('penitipan')->row();
     }
+    
+    public function count_bookings($type) {
+        if ($type === 'grooming') {
+            return $this->db->count_all_results('grooming');
+        } else if ($type === 'penitipan') {
+            return $this->db->count_all_results('penitipan');
+        }
+        return 0;
+    }
+
+    public function get_recent_grooming() {
+        $this->db->order_by('created_at', 'DESC');
+        return $this->db->get('grooming')->result();
+    }
+
+    public function get_recent_penitipan() {
+        $this->db->order_by('created_at', 'DESC');
+        return $this->db->get('penitipan')->result();
+    }
+
+    public function get_all_grooming() {
+        $this->db->order_by('created_at', 'DESC');
+        return $this->db->get('grooming')->result();
+    }
+
+    public function get_all_penitipan() {
+        $this->db->order_by('created_at', 'DESC');
+        return $this->db->get('penitipan')->result();
+    }
+
+    public function update_booking_status($booking_id, $type, $status) {
+        if ($type === 'grooming') {
+            return $this->db->where('id', $booking_id)
+                          ->update('grooming', ['status' => $status]);
+        }
+        return false;
+    }
 }

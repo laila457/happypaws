@@ -135,17 +135,28 @@
                                 <div class="booking-grid">
                                     <?php foreach ($grooming_history as $booking): ?>
                                         <div class="card booking-card h-100">
+                                            <!-- For Grooming History -->
                                             <div class="card-header bg-gradient-purple-light py-2">
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <h6 class="booking-id mb-0 text-dark">#<?php echo $booking->id; ?></h6>
-                                                    <span class="badge booking-status bg-<?php 
-                                                        switch($booking->metode_pembayaran) {
-                                                            case 'qris': echo 'success'; break;
-                                                            case 'cash': echo 'warning'; break;
-                                                            case 'bankTransfer': echo 'info'; break;
-                                                            default: echo 'secondary';
-                                                        }
-                                                    ?>"><?php echo ucfirst($booking->metode_pembayaran ?? 'pending'); ?></span>
+                                                    <div>
+                                                        <span class="badge bg-<?php 
+                                                            switch($booking->status) {
+                                                                case 'process': echo 'info'; break;
+                                                                case 'success': echo 'success'; break;
+                                                                case 'cancel': echo 'danger'; break;
+                                                                default: echo 'warning';
+                                                            }
+                                                        ?> me-2"><?php echo ucfirst($booking->status); ?></span>
+                                                        <span class="badge bg-<?php 
+                                                            switch($booking->metode_pembayaran) {
+                                                                case 'qris': echo 'success'; break;
+                                                                case 'cash': echo 'warning'; break;
+                                                                case 'bankTransfer': echo 'info'; break;
+                                                                default: echo 'secondary';
+                                                            }
+                                                        ?>"><?php echo ucfirst($booking->metode_pembayaran ?? 'pending'); ?></span>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="card-body">
@@ -170,13 +181,18 @@
                                             </div>
                                             <div class="card-footer bg-white border-0">
                                                 <div class="d-flex justify-content-between align-items-center">
-                                                    <h5 class="booking-price mb-0">Rp <?php echo number_format($booking->total_harga, 0, ',', '.'); ?></h5>
-                                                    <a href="<?php echo base_url('dashboard/invoice/' . $booking->id . '/penitipan'); ?>" class="btn btn-outline-purple btn-sm me-2" target="_blank">
-                                                            <i class="fas fa-receipt"></i> Struk
-                                                    </a>
-                                                    <a href="<?php echo base_url('dashboard/rebook/grooming/' . $booking->id); ?>" class="btn btn-purple btn-sm">
-                                                        <i class="fas fa-redo"></i> Pesan Ulang
-                                                    </a>
+                                                    <div>
+                                                        <small class="text-muted d-block">Total</small>
+                                                        <span class="booking-price fs-6 fw-semibold text-purple">Rp <?php echo number_format($booking->total_harga, 0, ',', '.'); ?></span>
+                                                    </div>
+                                                    <div class="d-flex gap-1">
+                                                        <a href="<?php echo site_url('dashboard/invoice/' . $booking->id . '/grooming'); ?>" class="btn btn-outline-purple btn-sm px-2 py-1" target="_blank">
+                                                            <i class="fas fa-receipt fa-sm"></i> Struk
+                                                        </a>
+                                                        <a href="<?php echo site_url('dashboard/rebook/grooming/' . $booking->id); ?>" class="btn btn-purple btn-sm px-2 py-1">
+                                                            <i class="fas fa-redo fa-sm"></i> Pesan Ulang
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -195,17 +211,28 @@
                                 <div class="booking-grid">
                                     <?php foreach ($penitipan_history as $booking): ?>
                                         <div class="card booking-card h-100">
+                                            <!-- For Penitipan History -->
                                             <div class="card-header bg-gradient-purple-light py-2">
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <h6 class="booking-id mb-0 text-dark">#<?php echo $booking->id; ?></h6>
-                                                    <span class="badge booking-status bg-<?php 
-                                                        switch($booking->metode_pembayaran) {
-                                                            case 'qris': echo 'success'; break;
-                                                            case 'cash': echo 'warning'; break;
-                                                            case 'bankTransfer': echo 'info'; break;
-                                                            default: echo 'secondary';
-                                                        }
-                                                    ?>"><?php echo ucfirst($booking->metode_pembayaran ?? 'pending'); ?></span>
+                                                    <div>
+                                                        <span class="badge bg-<?php 
+                                                            switch($booking->status) {
+                                                                case 'process': echo 'info'; break;
+                                                                case 'success': echo 'success'; break;
+                                                                case 'cancel': echo 'danger'; break;
+                                                                default: echo 'warning';
+                                                            }
+                                                        ?> me-2"><?php echo ucfirst($booking->status); ?></span>
+                                                        <span class="badge bg-<?php 
+                                                            switch($booking->metode_pembayaran) {
+                                                                case 'qris': echo 'success'; break;
+                                                                case 'cash': echo 'warning'; break;
+                                                                case 'bankTransfer': echo 'info'; break;
+                                                                default: echo 'secondary';
+                                                            }
+                                                        ?>"><?php echo ucfirst($booking->metode_pembayaran ?? 'pending'); ?></span>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="card-body">
@@ -230,13 +257,18 @@
                                             </div>
                                             <div class="card-footer bg-white border-0">
                                                 <div class="d-flex justify-content-between align-items-center">
-                                                    <h5 class="booking-price mb-0">Rp <?php echo number_format($booking->total_harga, 0, ',', '.'); ?></h5>
-                                                    <a href="<?php echo base_url('dashboard/invoice/' . $booking->id . '/penitipan'); ?>" class="btn btn-outline-purple btn-sm me-2" target="_blank">
-                                                            <i class="fas fa-receipt"></i> Struk
-                                                    </a>
-                                                    <a href="<?php echo base_url('dashboard/rebook/penitipan/' . $booking->id); ?>" class="btn btn-purple btn-sm">
-                                                        <i class="fas fa-redo"></i> Pesan Ulang
-                                                    </a>
+                                                    <div>
+                                                        <small class="text-muted d-block">Total</small>
+                                                        <span class="booking-price fs-6 fw-semibold text-purple">Rp <?php echo number_format($booking->total_harga, 0, ',', '.'); ?></span>
+                                                    </div>
+                                                    <div class="d-flex gap-1">
+                                                        <a href="<?php echo site_url('dashboard/invoice/' . $booking->id . '/penitipan'); ?>" class="btn btn-outline-purple btn-sm px-2 py-1" target="_blank">
+                                                            <i class="fas fa-receipt fa-sm"></i> Struk
+                                                        </a>
+                                                        <a href="<?php echo site_url('dashboard/rebook/penitipan/' . $booking->id); ?>" class="btn btn-purple btn-sm px-2 py-1">
+                                                            <i class="fas fa-redo fa-sm"></i> Pesan Ulang
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -466,7 +498,8 @@ $(document).ready(function() {
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <style>
-    .navbar {
+/* Navbar Styles */
+.navbar {
     background: linear-gradient(90deg, #BA68C8 0%, #7B1FA2 100%);
     padding: 10px 0;
     height: 110px;

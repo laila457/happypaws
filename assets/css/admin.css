@@ -1,0 +1,43 @@
+.bg-gradient-purple {
+    background: linear-gradient(90deg, #BA68C8 0%, #7B1FA2 100%);
+}
+
+.text-purple {
+    color: #7B1FA2;
+}
+
+.btn-purple {
+    background-color: #7B1FA2;
+    color: white;
+}
+
+.btn-purple:hover {
+    background-color: #6A1B9A;
+    color: white;
+}
+
+.btn-outline-purple {
+    border-color: #7B1FA2;
+    color: #7B1FA2;
+}
+
+.btn-outline-purple:hover {
+    background-color: #7B1FA2;
+    color: white;
+}
+
+.nav-link {
+    color: rgba(255,255,255,.8);
+}
+
+.nav-link:hover, .nav-link.active {
+    color: white;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.dropdown-item:active {
+    background-color: #7B1FA2;
+}

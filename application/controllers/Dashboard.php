@@ -393,25 +393,24 @@ class Dashboard extends CI_Controller {
             redirect('auth/login');
         }
     
-        $data['type'] = $type;
-        if ($type == 'grooming') {
-            $data['booking'] = $this->db->select('g.*, u.username, u.email, u.phone')
-                                      ->from('grooming g')
-                                      ->join('users u', 'u.username = g.nama_pemilik')
-                                      ->where('g.id', $id)
-                                      ->get()
-                                      ->row();
-        } else {
-            $data['booking'] = $this->db->select('p.*, u.username, u.email, u.phone')
-                                      ->from('penitipan p')
-                                      ->join('users u', 'u.username = p.nama_pemilik')
-                                      ->where('p.id', $id)
-                                      ->get()
-                                      ->row();
-        }
-    
-        if (!$data['booking']) {
+        // Validate type parameter
+        if (!in_array($type, ['grooming', 'penitipan'])) {
             show_404();
+        }
+
+        $data['type'] = $type;
+        
+        // Get booking data based on type
+        if ($type === 'grooming') {
+            $data['booking'] = $this->db->get_where('grooming', ['id' => $id])->row();
+            if (!$data['booking']) {
+                show_404();
+            }
+        } else {
+            $data['booking'] = $this->db->get_where('penitipan', ['id' => $id])->row();
+            if (!$data['booking']) {
+                show_404();
+            }
         }
     
         $this->load->view('dashboard/invoice', $data);
