@@ -47,23 +47,38 @@ class Admin extends CI_Controller {
     }
 
     public function update_status() {
+        if (!$this->input->is_ajax_request()) {
+            show_404();
+        }
+
         $booking_id = $this->input->post('booking_id');
-        $type = $this->input->post('type');
         $status = $this->input->post('status');
-        
-        $result = $this->booking_model->update_booking_status($booking_id, $type, $status);
-        
-        header('Content-Type: application/json');
-        echo json_encode(['success' => $result]);
+
+        // Load the model
+        $this->load->model('Booking_model');
+
+        // Update the status in the database
+        $result = $this->Booking_model->update_booking_status($booking_id, $status);
+
+        if ($result) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false]);
+        }
     }
 
-    public function get_dashboard_counts() {
-        $data = [
-            'grooming_count' => $this->booking_model->count_bookings('grooming'),
-            'penitipan_count' => $this->booking_model->count_bookings('penitipan')
+    public function get_dashboard_counters() {
+        if (!$this->input->is_ajax_request()) {
+            show_404();
+        }
+
+        $counters = [
+            'pending' => $this->booking_model->count_by_status('pending'),
+            'process' => $this->booking_model->count_by_status('process'),
+            'success' => $this->booking_model->count_by_status('success'),
+            'cancel' => $this->booking_model->count_by_status('cancel')
         ];
-        
-        header('Content-Type: application/json');
-        echo json_encode($data);
+
+        echo json_encode($counters);
     }
 }

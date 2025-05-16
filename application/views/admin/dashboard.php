@@ -58,7 +58,7 @@
                             <tbody>
                                 <?php foreach(array_slice($recent_grooming, 0, 5) as $booking): ?>
                                 <tr>
-                                    <td>#<?php echo $booking->id; ?></td>
+                                    <td><?php echo $booking->id; ?></td>
                                     <td><?php echo date('d M Y', strtotime($booking->tanggal_grooming)); ?></td>
                                     <td><?php echo $booking->nama_pemilik; ?></td>
                                     <td><span class="badge bg-<?php echo $booking->status == 'completed' ? 'success' : ($booking->status == 'pending' ? 'warning' : 'info'); ?>"><?php echo ucfirst($booking->status); ?></span></td>
@@ -92,7 +92,7 @@
                             <tbody>
                                 <?php foreach(array_slice($recent_penitipan, 0, 5) as $booking): ?>
                                 <tr>
-                                    <td>#<?php echo $booking->id; ?></td>
+                                    <td><?php echo $booking->id; ?></td>
                                     <td><?php echo date('d M Y', strtotime($booking->check_in)); ?></td>
                                     <td><?php echo $booking->nama_pemilik; ?></td>
                                     <td><span class="badge bg-<?php echo $booking->status == 'completed' ? 'success' : ($booking->status == 'pending' ? 'warning' : 'info'); ?>"><?php echo ucfirst($booking->status); ?></span></td>

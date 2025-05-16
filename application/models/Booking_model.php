@@ -1,5 +1,6 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') OR exit('No direct script 
+allowed');
 
 class Booking_model extends CI_Model {
     
@@ -54,11 +55,8 @@ class Booking_model extends CI_Model {
         return $this->db->get('penitipan')->result();
     }
 
-    public function update_booking_status($booking_id, $type, $status) {
-        if ($type === 'grooming') {
-            return $this->db->where('id', $booking_id)
-                          ->update('grooming', ['status' => $status]);
-        }
-        return false;
+    public function update_booking_status($booking_id, $status) {
+        $this->db->where('id', $booking_id);
+        return $this->db->update('grooming', ['status' => $status]);
     }
 }

@@ -49,7 +49,7 @@
                                         default: echo 'warning';
                                     }
                                 ?>"><?php echo ucfirst($booking->status); ?></span>
-                                <select class="form-select form-select-sm status-select mt-1" data-id="<?php echo $booking->id; ?>" data-type="grooming">
+                                <select class="form-select form-select-sm status-select mt-1" data-id="<?php echo $booking->id; ?>" data-type="grooming" <?php echo ($booking->status == 'success' || $booking->status == 'cancel') ? 'disabled' : ''; ?>>
                                     <option value="pending" <?php echo $booking->status == 'pending' ? 'selected' : ''; ?>>Pending</option>
                                     <option value="process" <?php echo $booking->status == 'process' ? 'selected' : ''; ?>>Process</option>
                                     <option value="success" <?php echo $booking->status == 'success' ? 'selected' : ''; ?>>Success</option>
@@ -78,13 +78,20 @@ $(document).ready(function() {
         const select = $(this);
         const booking_id = select.data('id');
         const status = select.val();
+        const currentStatus = select.siblings('.status-badge').text().toLowerCase();
         
+        // Prevent changing back to pending if already in process
+        if (currentStatus === 'process' && status === 'pending') {
+            select.val('process');
+            toastr.warning('Cannot change back to pending once in process');
+            return;
+        }
+
         $.ajax({
             url: '<?php echo site_url('admin/update_status'); ?>',
             type: 'POST',
             data: {
                 booking_id: booking_id,
-                type: 'grooming',
                 status: status
             },
             success: function(response) {
@@ -96,18 +103,28 @@ $(document).ready(function() {
                         badge.removeClass().addClass('badge status-badge bg-' + newColor);
                         badge.text(status.charAt(0).toUpperCase() + status.slice(1));
                         toastr.success('Status berhasil diperbarui');
+                        
+                        // Disable select after success or cancel
+                        if (status === 'success' || status === 'cancel') {
+                            select.prop('disabled', true);
+                        }
+
+                        // Refresh dashboard counters if available
+                        if (typeof updateDashboardCounters === 'function') {
+                            updateDashboardCounters();
+                        }
                     } else {
                         toastr.error('Gagal memperbarui status');
-                        select.val(select.siblings('.status-badge').text().toLowerCase());
+                        select.val(currentStatus);
                     }
                 } catch (e) {
                     toastr.error('Terjadi kesalahan sistem');
-                    select.val(select.siblings('.status-badge').text().toLowerCase());
+                    select.val(currentStatus);
                 }
             },
             error: function() {
                 toastr.error('Terjadi kesalahan sistem');
-                select.val(select.siblings('.status-badge').text().toLowerCase());
+                select.val(currentStatus);
             }
         });
     });
