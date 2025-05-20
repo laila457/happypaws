@@ -55,8 +55,12 @@ class Booking_model extends CI_Model {
         return $this->db->get('penitipan')->result();
     }
 
-    public function update_booking_status($booking_id, $status) {
+    public function update_status($booking_id, $type, $status) {
+        $table = ($type === 'grooming') ? 'grooming' : 'penitipan';
+        
+        $data = ['status' => $status];
+        
         $this->db->where('id', $booking_id);
-        return $this->db->update('grooming', ['status' => $status]);
+        return $this->db->update($table, $data);
     }
 }

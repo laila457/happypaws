@@ -21,10 +21,16 @@
                             <th>Aksi</th>
                         </tr>
                     </thead>
+                    <?php
+                    // Sort the bookings array by check-in date
+                    usort($bookings, function($a, $b) {
+                        return strtotime($a->check_in) - strtotime($b->check_in);
+                    });
+                    ?>
                     <tbody>
                         <?php foreach ($bookings as $booking): ?>
                         <tr>
-                            <td>#<?php echo $booking->id; ?></td>
+                            <td><?php echo $booking->id; ?></td>
                             <td><?php echo date('d M Y', strtotime($booking->check_in)); ?></td>
                             <td><?php echo date('d M Y', strtotime($booking->check_out)); ?></td>
                             <td><?php echo $booking->nama_pemilik; ?></td>
@@ -45,9 +51,9 @@
                             <td>
                                 <select class="form-select form-select-sm status-select" data-id="<?php echo $booking->id; ?>" data-type="penitipan">
                                     <option value="pending" <?php echo $booking->status == 'pending' ? 'selected' : ''; ?>>Pending</option>
-                                    <option value="confirmed" <?php echo $booking->status == 'confirmed' ? 'selected' : ''; ?>>Confirmed</option>
-                                    <option value="completed" <?php echo $booking->status == 'completed' ? 'selected' : ''; ?>>Completed</option>
-                                    <option value="cancelled" <?php echo $booking->status == 'cancelled' ? 'selected' : ''; ?>>Cancelled</option>
+                                    <option value="process" <?php echo $booking->status == 'process' ? 'selected' : ''; ?>>Process</option>
+                                    <option value="success" <?php echo $booking->status == 'success' ? 'selected' : ''; ?>>Success</option>
+                                    <option value="cancel" <?php echo $booking->status == 'cancel' ? 'selected' : ''; ?>>Cancel</option>
                                 </select>
                             </td>
                             <td>

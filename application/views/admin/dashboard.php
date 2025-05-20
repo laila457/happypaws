@@ -37,6 +37,17 @@
         </div>
     </div>
 
+    <?php
+    // Sort the recent grooming array by booking date
+    usort($recent_grooming, function($a, $b) {
+        return strtotime($a->tanggal_grooming) - strtotime($b->tanggal_grooming);
+    });
+    
+    // Sort the recent penitipan array by check-in date
+    usort($recent_penitipan, function($a, $b) {
+        return strtotime($a->check_in) - strtotime($b->check_in);
+    });
+    ?>
     <div class="row mt-4">
         <!-- Grooming Management -->
         <div class="col-md-6 mb-4">

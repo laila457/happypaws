@@ -48,37 +48,56 @@ class Admin extends CI_Controller {
 
     public function update_status() {
         if (!$this->input->is_ajax_request()) {
-            show_404();
+            exit('No direct script access allowed');
         }
 
         $booking_id = $this->input->post('booking_id');
+        $type = $this->input->post('type');
         $status = $this->input->post('status');
 
-        // Load the model
-        $this->load->model('Booking_model');
-
-        // Update the status in the database
-        $result = $this->Booking_model->update_booking_status($booking_id, $status);
-
-        if ($result) {
-            echo json_encode(['success' => true]);
-        } else {
+        if (!$booking_id || !$type || !$status) {
             echo json_encode(['success' => false]);
+            return;
+        }
+
+        $result = $this->booking_model->update_status($booking_id, $type, $status);
+        
+        echo json_encode(['success' => $result]);
+    }
+
+    // Add a new method to get updated status data
+    public function get_status_data() {
+        $booking_id = $this->input->get('booking_id');
+        $type = $this->input->get('type');
+        
+        if (!$booking_id || !$type) {
+            echo json_encode(['success' => false, 'message' => 'Missing required parameters']);
+            return;
+        }
+        
+        $data = null;
+        if ($type === 'grooming') {
+            $data = $this->booking_model->get_grooming_by_id($booking_id);
+        } else if ($type === 'penitipan') {
+            $data = $this->booking_model->get_penitipan_by_id($booking_id);
+        }
+        
+        if ($data) {
+            echo json_encode(['success' => true, 'data' => $data]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Data not found']);
         }
     }
 
-    public function get_dashboard_counters() {
-        if (!$this->input->is_ajax_request()) {
-            show_404();
-        }
-
-        $counters = [
-            'pending' => $this->booking_model->count_by_status('pending'),
-            'process' => $this->booking_model->count_by_status('process'),
-            'success' => $this->booking_model->count_by_status('success'),
-            'cancel' => $this->booking_model->count_by_status('cancel')
-        ];
-
-        echo json_encode($counters);
+    // Add a method to get dashboard counts for real-time updates
+    public function get_dashboard_counts() {
+        $grooming_count = $this->booking_model->count_bookings('grooming');
+        $penitipan_count = $this->booking_model->count_bookings('penitipan');
+        
+        echo json_encode([
+            'success' => true,
+            'grooming_count' => $grooming_count,
+            'penitipan_count' => $penitipan_count
+        ]);
     }
 }

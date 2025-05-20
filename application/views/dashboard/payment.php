@@ -85,8 +85,8 @@
                 <input type="file" class="form-control-file" id="transactionProof" name="transactionProof" required>
                 <small class="form-text text-muted">Format: JPG, PNG, atau JPEG (Max 2MB)</small>
             </div>
-            <input type="hidden" id="qrisUrl" value="<?php echo base_url('assets/images/qris.png'); ?>">
-            <input type="hidden" id="bankTransferDetails" value="Bank ABC - 1234567890">
+            <input type="hidden" id="qrisUrl" value="<?php echo base_url('assets/images/QRIS.jpeg'); ?>">
+            <input type="hidden" id="bankTransferDetails" value="Bank BCA - 1982675431">
             <button type="submit" class="btn btn-purple w-100">Konfirmasi Pembayaran</button>
         </form>
     </div>
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (this.value === 'cash') {
             paymentDetails.innerHTML = '<p class="text-success">Reservasi berhasil! Anda dapat membayar secara tunai saat datang.</p>';
         } else if (this.value === 'qris') {
-            paymentDetails.innerHTML = '<p class="text-info">Scan QRIS code di atas menggunakan aplikasi e-wallet Anda.</p><img src="' + qrisUrl + '" alt="QRIS Code" class="img-fluid">';
+            paymentDetails.innerHTML = '<p class="text-info">Scan QRIS code di bawah menggunakan aplikasi e-wallet Anda.</p><div style="text-align: center;"><img src="' + qrisUrl + '" alt="QRIS Code" class="img-fluid" style="max-width: 200px;"></div>';
         } else if (this.value === 'bankTransfer') {
             paymentDetails.innerHTML = '<p class="text-info">Silakan transfer ke rekening berikut:</p><p class="font-weight-bold">Bank ABC - 1234567890</p>';
         }

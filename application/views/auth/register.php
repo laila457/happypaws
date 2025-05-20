@@ -82,7 +82,8 @@
                 </div>
                 <div class="form-group">
                     <label for="phone"><i class="fas fa-phone text-purple"></i> Nomor HP</label>
-                    <input type="text" class="form-control" id="phone" name="phone" value="<?php echo set_value('phone'); ?>">
+                    <input type="text" class="form-control" id="phone" name="phone" value="<?php echo set_value('phone'); ?>" oninput="validatePhoneNumber(this)">
+                    <small id="phoneError" class="text-danger" style="display:none;">Tolong masukan angka.</small>
                     <?php echo form_error('phone', '<small class="text-danger">', '</small>'); ?>
                 </div>
                 <div class="form-group">
@@ -111,5 +112,15 @@
     
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function validatePhoneNumber(input) {
+            const phoneError = document.getElementById('phoneError');
+            if (/[^0-9]/.test(input.value)) {
+                phoneError.style.display = 'block';
+            } else {
+                phoneError.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>

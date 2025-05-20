@@ -130,10 +130,16 @@
                     </ul>
                     
                     <div class="tab-content" id="bookingTabContent">
+                        <!-- In the grooming tab -->
                         <div class="tab-pane fade show active" id="grooming" role="tabpanel">
                             <?php if (!empty($grooming_history)): ?>
                                 <div class="booking-grid">
-                                    <?php foreach ($grooming_history as $booking): ?>
+                                    <?php 
+                                    // Sort grooming history by date, newest first
+                                    usort($grooming_history, function($a, $b) {
+                                        return strtotime($b->tanggal_grooming) - strtotime($a->tanggal_grooming);
+                                    });
+                                    foreach ($grooming_history as $booking): ?>
                                         <div class="card booking-card h-100">
                                             <!-- For Grooming History -->
                                             <div class="card-header bg-gradient-purple-light py-2">
@@ -206,10 +212,16 @@
                             <?php endif; ?>
                         </div>
                         
+                        <!-- In the penitipan tab -->
                         <div class="tab-pane fade" id="penitipan" role="tabpanel">
                             <?php if (!empty($penitipan_history)): ?>
                                 <div class="booking-grid">
-                                    <?php foreach ($penitipan_history as $booking): ?>
+                                    <?php 
+                                    // Sort penitipan history by check-in date, newest first
+                                    usort($penitipan_history, function($a, $b) {
+                                        return strtotime($b->check_in) - strtotime($a->check_in);
+                                    });
+                                    foreach ($penitipan_history as $booking): ?>
                                         <div class="card booking-card h-100">
                                             <!-- For Penitipan History -->
                                             <div class="card-header bg-gradient-purple-light py-2">
