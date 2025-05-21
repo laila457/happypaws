@@ -311,7 +311,7 @@ class Dashboard extends CI_Controller {
         $check_in = new DateTime($this->input->post('check_in'));
         $check_out = new DateTime($this->input->post('check_out'));
         $interval = $check_in->diff($check_out);
-        $days = $interval->days + 1;
+        $days = $interval->days + 0;
         
         $rate = ($this->input->post('paket') === 'premium') ? 75000 : 50000;
         return $days * $rate;
