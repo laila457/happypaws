@@ -313,7 +313,14 @@ class Dashboard extends CI_Controller {
         $interval = $check_in->diff($check_out);
         $days = $interval->days + 0;
         
-        $rate = ($this->input->post('paket') === 'premium') ? 75000 : 50000;
+        $package_prices = [
+            'regular' => 50000,
+            'premium' => 75000
+        ];
+        
+        $selected_package = $this->input->post('paket_penitipan');
+        $rate = isset($package_prices[$selected_package]) ? $package_prices[$selected_package] : $package_prices['regular'];
+        
         return $days * $rate;
     }
 

@@ -37,19 +37,44 @@
                             <td><?php echo $booking->no_hp; ?></td>
                             <td><?php echo $booking->nama_hewan; ?></td>
                             <td><?php echo $booking->jenis_hewan; ?></td>
-                            <td><?php echo ucfirst($booking->paket_penitipan); ?></td>
+                            <td><?php 
+                                $package_names = [
+                                    'regular' => 'Regular',
+                                    'premium' => 'Premium'
+                                ];
+                                echo isset($package_names[$booking->paket_penitipan]) ? 
+                                    $package_names[$booking->paket_penitipan] : 'Regular';
+                            ?></td>
                             <td>
                                 <span class="badge bg-<?php 
                                     switch($booking->metode_pembayaran) {
                                         case 'qris': echo 'success'; break;
                                         case 'cash': echo 'warning'; break;
                                         case 'bankTransfer': echo 'info'; break;
+                                        case 'transferBank': echo 'info'; break;
                                         default: echo 'secondary';
                                     }
-                                ?>"><?php echo ucfirst($booking->metode_pembayaran ?? 'pending'); ?></span>
+                                ?>"><?php 
+                                    $payment_methods = [
+                                        'qris' => 'QRIS',
+                                        'cash' => 'Cash',
+                                        'bankTransfer' => 'Transfer Bank',
+                                        'transferBank' => 'Transfer Bank'
+                                    ];
+                                    echo isset($payment_methods[$booking->metode_pembayaran]) ? 
+                                        $payment_methods[$booking->metode_pembayaran] : 'Pending';
+                                ?></span>
                             </td>
                             <td>
-                                <select class="form-select form-select-sm status-select" data-id="<?php echo $booking->id; ?>" data-type="penitipan">
+                                <span class="badge bg-<?php 
+                                    switch($booking->status) {
+                                        case 'process': echo 'info'; break;
+                                        case 'success': echo 'success'; break;
+                                        case 'cancel': echo 'danger'; break;
+                                        default: echo 'warning';
+                                    }
+                                ?> mb-2 d-inline-block" style="min-width: 80px"><?php echo ucfirst($booking->status); ?></span>
+                                <select class="form-select form-select-sm status-select w-auto min-width-120" data-id="<?php echo $booking->id; ?>" data-type="penitipan">
                                     <option value="pending" <?php echo $booking->status == 'pending' ? 'selected' : ''; ?>>Pending</option>
                                     <option value="process" <?php echo $booking->status == 'process' ? 'selected' : ''; ?>>Process</option>
                                     <option value="success" <?php echo $booking->status == 'success' ? 'selected' : ''; ?>>Success</option>
@@ -57,9 +82,11 @@
                                 </select>
                             </td>
                             <td>
-                                <a href="<?php echo site_url('dashboard/invoice/' . $booking->id . '/penitipan'); ?>" class="btn btn-sm btn-info" target="_blank">
-                                    <i class="fas fa-receipt"></i>
-                                </a>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-danger delete-booking" data-id="<?php echo $booking->id; ?>">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -74,28 +101,53 @@
 $(document).ready(function() {
     $('#penitipanTable').DataTable();
 
-    $('.status-select').change(function() {
-        const booking_id = $(this).data('id');
-        const type = $(this).data('type');
-        const status = $(this).val();
-
-        $.ajax({
-            url: '<?php echo site_url('admin/update_status'); ?>',
-            type: 'POST',
-            data: {
-                booking_id: booking_id,
-                type: type,
-                status: status
-            },
-            success: function(response) {
-                const result = JSON.parse(response);
-                if (result.success) {
-                    toastr.success('Status berhasil diperbarui');
-                } else {
-                    toastr.error('Gagal memperbarui status');
+    // Delete functionality
+    $(document).on('click', '.delete-booking', function() {
+        const bookingId = $(this).data('id');
+        const row = $(this).closest('tr');
+        
+        if (confirm('Apakah Anda yakin ingin menghapus booking ini?')) {
+            $.ajax({
+                url: '<?php echo site_url('admin/delete_booking/penitipan/'); ?>' + bookingId,
+                type: 'POST',
+                success: function(response) {
+                    try {
+                        const result = JSON.parse(response);
+                        if (result.success) {
+                            row.remove();
+                            toastr.success('Booking berhasil dihapus');
+                        } else {
+                            toastr.error('Gagal menghapus booking: ' + (result.message || ''));
+                        }
+                    } catch (e) {
+                        console.error('Error:', e);
+                        toastr.error('Terjadi kesalahan sistem');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                    toastr.error('Terjadi kesalahan sistem');
                 }
-            }
-        });
+            });
+        }
     });
 });
 </script>
+
+<style>
+    .min-width-120 {
+        min-width: 120px !important;
+    }
+    .status-select {
+        padding: 2px 5px;
+        border-radius: 4px;
+        border: 1px solid #dee2e6;
+    }
+    .status-select.bg-warning { background-color: #ffc107 !important; }
+    .status-select.bg-info { background-color: #17a2b8 !important; }
+    .status-select.bg-success { background-color: #28a745 !important; }
+    .status-select.bg-danger { background-color: #dc3545 !important; }
+    .status-select option {
+        background-color: white;
+    }
+</style>

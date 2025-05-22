@@ -56,9 +56,10 @@
                 <p>Paket: <?php 
                     $package_names = [
                         'regular' => 'Regular',
-                        'premium' => 'Premium'
+                        'premium' => 'Premium',
+                        'basic' => 'Regular'  // Add this for backward compatibility
                     ];
-                    $package_name = isset($package_names[$booking->paket_penitipan]) ? $package_names[$booking->paket_penitipan] : $booking->paket_penitipan;
+                    $package_name = isset($package_names[$booking->paket_penitipan]) ? $package_names[$booking->paket_penitipan] : 'Regular';
                     echo $package_name; 
                 ?></p>
                 <p>Check-in: <?php echo date('d F Y', strtotime($booking->check_in)); ?></p>

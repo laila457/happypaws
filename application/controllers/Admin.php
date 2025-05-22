@@ -47,22 +47,20 @@ class Admin extends CI_Controller {
     }
 
     public function update_status() {
-        if (!$this->input->is_ajax_request()) {
-            exit('No direct script access allowed');
-        }
-
         $booking_id = $this->input->post('booking_id');
         $type = $this->input->post('type');
         $status = $this->input->post('status');
-
-        if (!$booking_id || !$type || !$status) {
-            echo json_encode(['success' => false]);
-            return;
-        }
-
-        $result = $this->booking_model->update_status($booking_id, $type, $status);
         
-        echo json_encode(['success' => $result]);
+        $table = ($type === 'penitipan') ? 'penitipan' : 'grooming';
+        
+        $this->db->where('id', $booking_id);
+        $update = $this->db->update($table, ['status' => $status]);
+        
+        if ($update) {
+            echo json_encode(['success' => true, 'message' => 'Status updated successfully']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to update status']);
+        }
     }
 
     // Add a new method to get updated status data
@@ -99,5 +97,23 @@ class Admin extends CI_Controller {
             'grooming_count' => $grooming_count,
             'penitipan_count' => $penitipan_count
         ]);
+    }
+
+    public function delete_booking($type, $id) {
+        if (!$this->input->is_ajax_request()) {
+            exit('No direct script access allowed');
+        }
+
+        $table = $type === 'grooming' ? 'grooming' : 'penitipan';
+        
+        $this->db->where('id', $id);
+        $result = $this->db->delete($table);
+        
+        $response = [
+            'success' => $result ? true : false,
+            'message' => $result ? 'Successfully deleted' : 'Failed to delete'
+        ];
+        
+        echo json_encode($response);
     }
 }

@@ -16,3 +16,4 @@ $route['dashboard'] = 'dashboard/index';
 $route['dashboard/payment/(:num)'] = 'dashboard/payment/$1';
 // Admin routes
 $route['admin/dashboard'] = 'admin/dashboard/index';
+$route['admin/delete_booking/(:any)/(:num)'] = 'admin/delete_booking/$1/$2';

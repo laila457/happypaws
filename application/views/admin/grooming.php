@@ -63,9 +63,11 @@
                                 </select>
                             </td>
                             <td>
-                                <a href="<?php echo site_url('dashboard/invoice/' . $booking->id . '/grooming'); ?>" class="btn btn-sm btn-info" target="_blank">
-                                    <i class="fas fa-receipt"></i>
-                                </a>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-danger delete-booking" data-id="<?php echo $booking->id; ?>">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -296,5 +298,33 @@ $(document).ready(function() {
             }
         });
     }
+    
+    // Add delete functionality
+    $(document).on('click', '.delete-booking', function() {
+        const bookingId = $(this).data('id');
+        const row = $(this).closest('tr');
+        
+        if (confirm('Apakah Anda yakin ingin menghapus booking ini?')) {
+            $.ajax({
+                url: '<?php echo site_url('admin/delete_booking/grooming/'); ?>' + bookingId,
+                type: 'POST',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        row.remove();
+                        toastr.success('Booking berhasil dihapus');
+                        // Update dashboard counters
+                        updateDashboardCounters();
+                    } else {
+                        toastr.error('Gagal menghapus booking: ' + (response.message || ''));
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                    toastr.error('Terjadi kesalahan sistem');
+                }
+            });
+        }
+    });
 });
 </script>

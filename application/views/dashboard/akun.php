@@ -144,7 +144,6 @@
                                             <!-- For Grooming History -->
                                             <div class="card-header bg-gradient-purple-light py-2">
                                                 <div class="d-flex justify-content-between align-items-center">
-                                                    <h6 class="booking-id mb-0 text-dark"><?php echo $booking->id; ?></h6>
                                                     <div>
                                                         <span class="badge bg-<?php 
                                                             switch($booking->status) {
@@ -226,7 +225,6 @@
                                             <!-- For Penitipan History -->
                                             <div class="card-header bg-gradient-purple-light py-2">
                                                 <div class="d-flex justify-content-between align-items-center">
-                                                    <h6 class="booking-id mb-0 text-dark"><?php echo $booking->id; ?></h6>
                                                     <div>
                                                         <span class="badge bg-<?php 
                                                             switch($booking->status) {
@@ -263,7 +261,14 @@
                                                     </div>
                                                     <div class="detail-item">
                                                         <i class="fas fa-tag text-purple"></i>
-                                                        <span><?php echo ucfirst($booking->paket_penitipan); ?></span>
+                                                        <span><?php 
+                                                            $package_names = [
+                                                                'regular' => 'Regular',
+                                                                'premium' => 'Premium'
+                                                            ];
+                                                            echo isset($package_names[$booking->paket_penitipan]) ? 
+                                                                $package_names[$booking->paket_penitipan] : 'Regular';
+                                                        ?></span>
                                                     </div>
                                                 </div>
                                             </div>
