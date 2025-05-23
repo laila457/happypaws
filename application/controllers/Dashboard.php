@@ -9,6 +9,10 @@ class Dashboard extends CI_Controller {
             redirect('auth');
         }
         
+        // Load required models
+        $this->load->model('user_model');
+        $this->load->model('booking_model');
+        
         // Redirect admin to admin dashboard
         if ($this->session->userdata('role') == 'admin') {
             redirect('admin/dashboard');
@@ -102,15 +106,7 @@ class Dashboard extends CI_Controller {
     }
     
     public function akun() {
-        if (!$this->session->userdata('logged_in')) {
-            redirect('auth/login');
-        }
-    
         $user_id = $this->session->userdata('user_id');
-        
-        $this->load->model('user_model');
-        $this->load->model('booking_model');
-        
         $data['user'] = $this->user_model->get_user_by_id($user_id);
         $data['grooming_history'] = $this->booking_model->get_grooming_history($user_id);
         $data['penitipan_history'] = $this->booking_model->get_penitipan_history($user_id);
@@ -214,24 +210,16 @@ class Dashboard extends CI_Controller {
         echo json_encode($response);
     }
 
-    private function calculate_total_harga($selected_package, $delivery) {
+    private function calculate_total_harga($selected_package) {
         $package_prices = [
             'basic' => 50000,
             'kutu' => 70000,
             'full' => 85000
         ];
 
-        $total_harga = isset($package_prices[$selected_package]) ? $package_prices[$selected_package] : 0;
-
-        // Add any additional costs based on delivery options if needed
-        // For example, if delivery is not free, add a delivery charge
-        // if ($delivery === 'antar') {
-        //     $total_harga += 10000; // Example delivery charge
-        // }
-
-        return $total_harga;
+        return isset($package_prices[$selected_package]) ? $package_prices[$selected_package] : 0;
     }
-
+    
     public function submit_grooming() {
         // Capture form data
         $selected_date = $this->input->post('selected_date');
@@ -311,15 +299,18 @@ class Dashboard extends CI_Controller {
         $check_in = new DateTime($this->input->post('check_in'));
         $check_out = new DateTime($this->input->post('check_out'));
         $interval = $check_in->diff($check_out);
-        $days = $interval->days + 0;
+        $days = $interval->days + 0; // Include both check-in and check-out days
         
         $package_prices = [
             'regular' => 50000,
             'premium' => 75000
         ];
         
-        $selected_package = $this->input->post('paket_penitipan');
-        $rate = isset($package_prices[$selected_package]) ? $package_prices[$selected_package] : $package_prices['regular'];
+        $selected_package = $this->input->post('paket');
+        $rate = $package_prices['premium'];
+        if ($selected_package === 'regular') {
+            $rate = $package_prices['regular'];
+        }
         
         return $days * $rate;
     }

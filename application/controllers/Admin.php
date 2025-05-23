@@ -9,6 +9,7 @@ class Admin extends CI_Controller {
             redirect('auth');
         }
         $this->load->model('booking_model');
+        $this->load->model('user_model'); // Add this line
     }
 
     public function index() {
@@ -18,6 +19,8 @@ class Admin extends CI_Controller {
     public function dashboard() {
         $data['title'] = 'Admin Dashboard';
         $data['username'] = $this->session->userdata('username');
+        $data['users_count'] = $this->user_model->count_users();
+        $data['recent_users'] = $this->user_model->get_recent_users(); // Add this line
         $data['grooming_count'] = $this->booking_model->count_bookings('grooming');
         $data['penitipan_count'] = $this->booking_model->count_bookings('penitipan');
         $data['recent_grooming'] = $this->booking_model->get_recent_grooming();

@@ -74,6 +74,30 @@
                                         <input type="time" class="form-control" name="time" required>
                                     </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    const dateInput = document.getElementById('selected_date');
+    dateInput.min = today;
+    
+    // If there's a past date already selected, clear it
+    if (dateInput.value < today) {
+        dateInput.value = '';
+    }
+    
+    // Handle delivery address fields visibility
+    const deliveryRadios = document.querySelectorAll('input[name="delivery"]');
+    const alamatFields = document.getElementById('alamatFields');
+
+    deliveryRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            alamatFields.style.display = this.value === 'antar' ? 'block' : 'none';
+        });
+    });
+});
+</script>
+
                                     <div class="form-group mb-4">
                                         <label><i class="fas fa-user"></i> Data Pelanggan</label>
                                         <input type="text" class="form-control mb-2" name="nama" value="<?php echo isset($rebook) ? $rebook->nama_pemilik : ''; ?>" placeholder="Nama Pemilik" required>
@@ -145,7 +169,7 @@
 
                             <div class="row mt-4">
                                 <div class="col-12">
-                                    <button type="submit" class="btn btn-purple w-100">Selesaikan Pemesanan</button>
+                                    <button type="submit" class="btn btn-purple w-100" id="submitButton" disabled>Selesaikan Pemesanan</button>
                                 </div>
                             </div>
                         </form>
@@ -226,6 +250,56 @@ document.addEventListener('DOMContentLoaded', function() {
             alamatFields.style.display = this.value === 'antar' ? 'block' : 'none';
         });
     });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('bookingForm');
+    const submitButton = document.getElementById('submitButton');
+
+    function validateForm() {
+        const date = document.querySelector('input[name="selected_date"]').value;
+        const time = document.querySelector('input[name="time"]').value;
+        const nama = document.querySelector('input[name="nama"]').value;
+        const hp = document.querySelector('input[name="hp"]').value;
+        const petType = document.querySelector('input[name="petType"]:checked');
+        const package = document.getElementById('selected_package').value;
+        const delivery = document.querySelector('input[name="delivery"]:checked');
+        
+        // Additional validation for delivery address if antar is selected
+        let addressValid = true;
+        if (delivery && delivery.value === 'antar') {
+            const kecamatan = document.querySelector('select[name="kecamatan"]').value;
+            const desa = document.querySelector('select[name="desa"]').value;
+            const detailAlamat = document.querySelector('textarea[name="detail_alamat"]').value;
+            addressValid = kecamatan && desa && detailAlamat;
+        }
+
+        const isValid = date && time && nama && hp && petType && package && delivery && addressValid;
+        submitButton.disabled = !isValid;
+        
+        if (isValid) {
+            submitButton.classList.remove('btn-secondary');
+            submitButton.classList.add('btn-purple');
+        } else {
+            submitButton.classList.remove('btn-purple');
+            submitButton.classList.add('btn-secondary');
+        }
+    }
+
+    // Add event listeners to all form inputs
+    form.querySelectorAll('input, select, textarea').forEach(element => {
+        element.addEventListener('change', validateForm);
+        element.addEventListener('input', validateForm);
+    });
+
+    // Add event listener to package buttons
+    document.querySelectorAll('.package-btn').forEach(button => {
+        button.addEventListener('click', validateForm);
+    });
+
+    // Initial validation
+    validateForm();
 });
 </script>
 <script src="<?php echo base_url('assets/js/grooming.js'); ?>"> </script>

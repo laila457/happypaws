@@ -99,14 +99,35 @@
                                     <label class="d-block mb-2"><i class="fas fa-calendar"></i> Periode Penitipan</label>
                                     <div class="mb-3">
                                         <label>Tanggal Check-in</label>
-                                        <input type="date" class="form-control" name="check_in" required>
+                                        <input type="date" class="form-control" name="check_in" id="check_in" required>
                                     </div>
                                     <div class="mb-3">
                                         <label>Tanggal Check-out</label>
-                                        <input type="date" class="form-control" name="check_out" required>
+                                        <input type="date" class="form-control" name="check_out" id="check_out" required>
                                     </div>
                                 </div>
 
+                                <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    // Set minimum date for check-in and check-out
+                                    const today = new Date().toISOString().split('T')[0];
+                                    const checkIn = document.getElementById('check_in');
+                                    const checkOut = document.getElementById('check_out');
+                                    
+                                    checkIn.min = today;
+                                    checkOut.min = today;
+                                    
+                                    // Update check-out minimum date when check-in is selected
+                                    checkIn.addEventListener('change', function() {
+                                        checkOut.min = this.value;
+                                        if (checkOut.value && checkOut.value < this.value) {
+                                            checkOut.value = this.value;
+                                        }
+                                    });
+
+                                    // Existing code continues...
+                                });
+                                </script>
                                 <!-- Data Pemilik -->
                                 <div class="form-group mb-4">
                                     <label class="mb-2"><i class="fas fa-user"></i> Data Pemilik</label>
@@ -196,7 +217,7 @@
 
                         <div class="row mt-4">
                             <div class="col-12">
-                                <button type="submit" class="btn btn-purple w-100">Selesaikan Pesanan</button>
+                                <button type="submit" class="btn btn-purple w-100" id="submitButton" disabled>Selesaikan Pesanan</button>
                             </div>
                         </div>
                     </form>
@@ -276,5 +297,70 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    function validateForm() {
+        const checkIn = document.querySelector('input[name="check_in"]').value;
+        const checkOut = document.querySelector('input[name="check_out"]').value;
+        const namaPemilik = document.querySelector('input[name="nama_pemilik"]').value;
+        const noHp = document.querySelector('input[name="no_hp"]').value;
+        const namaHewan = document.querySelector('input[name="nama_hewan"]').value;
+        const jenisHewan = document.querySelector('input[name="jenis_hewan"]:checked');
+        const paket = document.querySelector('input[name="paket"]:checked');
+        const pengantaran = document.querySelector('input[name="pengantaran"]:checked');
+
+        let isValid = checkIn && checkOut && namaPemilik && noHp && 
+                     namaHewan && jenisHewan && paket && pengantaran;
+
+        // Additional validation for delivery address
+        if (pengantaran && pengantaran.value === 'antar') {
+            const kecamatan = document.querySelector('select[name="kecamatan"]').value;
+            const desa = document.querySelector('select[name="desa"]').value;
+            const detailAlamat = document.querySelector('textarea[name="detail_alamat"]').value;
+            isValid = isValid && kecamatan && desa && detailAlamat;
+        }
+
+        const submitButton = document.getElementById('submitButton');
+        submitButton.disabled = !isValid;
+        
+        if (isValid) {
+            submitButton.classList.remove('btn-secondary');
+            submitButton.classList.add('btn-purple');
+        } else {
+            submitButton.classList.remove('btn-purple');
+            submitButton.classList.add('btn-secondary');
+        }
+    }
+
+    // Add event listeners to all form inputs
+    const form = document.getElementById('bookingForm');
+    form.querySelectorAll('input, select, textarea').forEach(element => {
+        element.addEventListener('change', validateForm);
+        element.addEventListener('input', validateForm);
+    });
+
+    // Initial validation
+    validateForm();
 });
 </script>
+
+<div class="package-prices" style="display: none;">
+        <span id="price-regular" data-price="50000">50.000</span>
+        <span id="price-premium" data-price="75000">75.000</span>
+    </div>
+
+    <script>
+    function calculateTotalPrice() {
+        const package = document.querySelector('input[name="package"]:checked').value;
+        const checkIn = new Date(document.getElementById('check_in').value);
+        const checkOut = new Date(document.getElementById('check_out').value);
+        
+        if (checkIn && checkOut) {
+            const oneDay = 24 * 60 * 60 * 1000;
+            const days = Math.round(Math.abs((checkOut - checkIn) / oneDay)) + 1;
+            const basePrice = package === 'premium' ? 75000 : 50000;
+            const total = basePrice * days;
+            
+            document.getElementById('totalPrice').textContent = total.toLocaleString('id-ID');
+        }
+    }
+    </script>

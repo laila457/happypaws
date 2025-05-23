@@ -133,7 +133,6 @@ $(document).ready(function() {
     });
 });
 </script>
-
 <style>
     .min-width-120 {
         min-width: 120px !important;

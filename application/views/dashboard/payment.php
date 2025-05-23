@@ -73,7 +73,6 @@
             <div class="form-group mb-4">
                 <label for="paymentMethod">Pilih Metode Pembayaran:</label>
                 <select class="form-control" id="paymentMethod" name="paymentMethod" required>
-                    <option value="cash">Cash</option>
                     <option value="qris">QRIS</option>
                     <option value="bankTransfer">Transfer Bank</option>
                 </select>
@@ -100,9 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     paymentMethodSelect.addEventListener('change', function() {
         paymentDetails.innerHTML = '';
-        if (this.value === 'cash') {
-            paymentDetails.innerHTML = '<p class="text-success">Reservasi berhasil! Anda dapat membayar secara tunai saat datang.</p>';
-        } else if (this.value === 'qris') {
+        if (this.value === 'qris') {
             paymentDetails.innerHTML = '<p class="text-info">Scan QRIS code di bawah menggunakan aplikasi e-wallet Anda.</p><div style="text-align: center;"><img src="' + qrisUrl + '" alt="QRIS Code" class="img-fluid" style="max-width: 200px;"></div>';
         } else if (this.value === 'bankTransfer') {
             paymentDetails.innerHTML = '<p class="text-info">Silakan transfer ke rekening berikut:</p><p class="font-weight-bold">Bank ABC - 1234567890</p>';
